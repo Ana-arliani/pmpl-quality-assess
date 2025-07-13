@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laporan | QualityAssess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow sticky top-0 z-10">
+      <nav class="max-w-7xl mx-auto px-4 py-4 flex justify-between">
+        <a href="#" class="text-xl font-bold text-blue-600"
+          >QualityAssess Tugas PMPL Ana</a
+        >
+        <div class="space-x-4 text-sm">
+          <a href="index.html" class="hover:text-blue-600">Beranda</a>
+          <a href="penilaian.html" class="hover:text-blue-600">Penilaian</a>
+          <a href="laporan.html" class="text-blue-600 font-semibold">Laporan</a>
+          <a href="tentang.html" class="hover:text-blue-600">Tentang</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-10">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold text-gray-800">Daftar Laporan</h1>
+        <div class="space-x-2">
+          <button
+            onclick="cetakLaporan()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm"
+          >
+            Cetak
+          </button>
+          <button
+            onclick="exportCSV()"
+            class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm"
+          >
+            Export CSV
+          </button>
+          <button
+            onclick="exportJSON()"
+            class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded text-sm"
+          >
+            Export JSON
+          </button>
+          <button
+            onclick="window.print()"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm"
+          >
+            Export PDF
+          </button>
+        </div>
+      </div>
+      <div id="laporanList" class="space-y-4"></div>
+    </main>
+
+    <script>
+      let laporan = JSON.parse(localStorage.getItem("laporan") || "[]");
+      const container = document.getElementById("laporanList");
+
+      function renderLaporan() {
+        container.innerHTML = "";
+        if (laporan.length === 0) {
+          container.innerHTML =
+            "<p class='text-gray-600'>Belum ada laporan.</p>";
+          return;
+        }
+
+        laporan.forEach((lapor, i) => {
+          const el = document.createElement("div");
+          el.className = "bg-white p-4 rounded shadow border border-gray-200";
+          el.innerHTML = `
+          <p class="font-bold text-blue-700">${i + 1}. ${
+            lapor.namaProyek
+          } (Versi ${lapor.versi})</p>
+          <p class="text-sm text-gray-700">Penilai: ${
+            lapor.namaPenilai
+          } | Tanggal: ${lapor.tanggalPenilaian}</p>
+          <p class="text-sm text-gray-800 mt-2"><strong>Skor Total:</strong> ${
+            lapor.totalSkor
+          } &mdash; <strong>Interpretasi:</strong> ${lapor.interpretasi}</p>
+          <p class="text-sm text-gray-800"><strong>Kesimpulan:</strong> ${
+            lapor.kesimpulan || "-"
+          }</p>
+          <p class="text-sm text-gray-800 mb-2"><strong>Rekomendasi:</strong> ${
+            lapor.rekomendasi || "-"
+          }</p>
+          <div class="flex gap-2">
+            <button onclick="editLaporan(${i})" class="px-3 py-1 text-sm bg-yellow-400 text-white rounded hover:bg-yellow-500">Edit</button>
+            <button onclick="hapusLaporan(${i})" class="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">Hapus</button>
+          </div>
+        `;
+          container.appendChild(el);
+        });
+      }
+
+      function hapusLaporan(index) {
+        if (confirm("Yakin ingin menghapus laporan ini?")) {
+          laporan.splice(index, 1);
+          localStorage.setItem("laporan", JSON.stringify(laporan));
+          renderLaporan();
+        }
+      }
+
+      function editLaporan(index) {
+        const item = laporan[index];
+        sessionStorage.setItem("editIndex", index);
+        sessionStorage.setItem("editData", JSON.stringify(item));
+        window.location.href = "penilaian.html?edit=1";
+      }
+
+      function cetakLaporan() {
+        window.print();
+      }
+
+      function exportCSV() {
+        if (!laporan.length) {
+          alert("Tidak ada laporan untuk diekspor.");
+          return;
+        }
+
+        const keys = [
+          "namaProyek",
+          "versi",
+          "namaPenilai",
+          "tanggalPenilaian",
+          "totalSkor",
+          "interpretasi",
+          "kesimpulan",
+          "rekomendasi",
+        ];
+        const header = keys.join(",") + "\n";
+        const rows = laporan
+          .map((item) =>
+            keys
+              .map((k) => `"${(item[k] || "").toString().replace(/"/g, '""')}"`)
+              .join(",")
+          )
+          .join("\n");
+
+        const blob = new Blob([header + rows], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "laporan_penilaian.csv";
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportJSON() {
+        if (!laporan.length) {
+          alert("Tidak ada data untuk diekspor.");
+          return;
+        }
+
+        const blob = new Blob([JSON.stringify(laporan, null, 2)], {
+          type: "application/json",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "laporan_penilaian.json";
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      renderLaporan();
+    </script>
+  </body>
+</html>
