@@ -337,6 +337,7 @@
       document.querySelector("form").addEventListener("submit", function (e) {
         e.preventDefault();
         const form = e.target;
+
         const data = {
           namaProyek: form.namaProyek.value,
           versi: form.versi.value,
@@ -348,13 +349,30 @@
           komentar: {},
         };
 
+        let isValid = true;
+
         Object.entries(struktur).forEach(([_, subkriterias]) => {
           subkriterias.forEach(({ nama }) => {
             const id = nama.toLowerCase().replace(/\s+/g, "_");
-            data.penilaian[id] = form[id].value;
-            data.komentar[id] = form[`komentar_${id}`].value;
+            const nilaiRadio = form.querySelector(
+              `input[name="${id}"]:checked`
+            );
+            const komentarField = form.querySelector(
+              `textarea[name="komentar_${id}"]`
+            );
+
+            if (!nilaiRadio) {
+              alert(`Mohon isi penilaian untuk: ${nama}`);
+              isValid = false;
+              return;
+            }
+
+            data.penilaian[id] = nilaiRadio.value;
+            data.komentar[id] = komentarField ? komentarField.value : "";
           });
         });
+
+        if (!isValid) return;
 
         const totalSkor = hitungSkor(data);
         const interpretasi = interpretasiSkor(totalSkor);
@@ -413,4 +431,3 @@
     </script>
   </body>
 </html>
-\end{code}
