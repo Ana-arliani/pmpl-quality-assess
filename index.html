@@ -26,11 +26,71 @@
         Aplikasi ini digunakan untuk menilai kualitas perangkat lunak
         berdasarkan standar ISO 9126.
       </p>
-      <div class="bg-white rounded shadow p-6">
+
+      <div class="bg-white rounded shadow p-6 mb-10">
         <p class="text-gray-600">Jumlah laporan yang telah dibuat:</p>
         <p id="jumlahLaporan" class="text-3xl text-blue-600 font-bold mt-2">
           0
         </p>
+      </div>
+
+      <div class="bg-white rounded shadow p-6 overflow-x-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">
+          Range Penilaian Kualitas Perangkat Lunak (Skor 100–500)
+        </h2>
+        <table class="min-w-full text-sm text-left border border-gray-300">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="border border-gray-300 px-4 py-2">Skor Akhir</th>
+              <th class="border border-gray-300 px-4 py-2">
+                Kategori Penilaian
+              </th>
+              <th class="border border-gray-300 px-4 py-2">Interpretasi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">425-500</td>
+              <td class="border border-gray-300 px-4 py-2">Sangat Baik</td>
+              <td class="border border-gray-300 px-4 py-2">
+                Perangkat lunak sangat memenuhi semua aspek kualitas. Layak
+                digunakan tanpa revisi berarti.
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">350-424</td>
+              <td class="border border-gray-300 px-4 py-2">Baik</td>
+              <td class="border border-gray-300 px-4 py-2">
+                Perangkat lunak cukup baik, dengan kekurangan minor.
+                Direkomendasikan untuk digunakan dengan sedikit perbaikan.
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">275-349</td>
+              <td class="border border-gray-300 px-4 py-2">Cukup</td>
+              <td class="border border-gray-300 px-4 py-2">
+                Perangkat lunak masih bisa digunakan, namun memerlukan
+                peningkatan signifikan di beberapa aspek.
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">200-274</td>
+              <td class="border border-gray-300 px-4 py-2">Buruk</td>
+              <td class="border border-gray-300 px-4 py-2">
+                Banyak aspek kualitas yang tidak terpenuhi. Penggunaan tidak
+                disarankan tanpa perbaikan besar.
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">100-199</td>
+              <td class="border border-gray-300 px-4 py-2">Sangat Buruk</td>
+              <td class="border border-gray-300 px-4 py-2">
+                Perangkat lunak gagal secara menyeluruh dalam memenuhi standar
+                kualitas. Tidak layak digunakan.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </main>
 
@@ -40,3 +100,4 @@
     </script>
   </body>
 </html>
+
